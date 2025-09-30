@@ -13,3 +13,18 @@
 195.133.64.12,443,CZ,Cloud Hosting Solutions
 195.133.65.195,2053,CZ,Cloud Hosting Solutions
 194.87.11.56,8000,CZ,Root Localhost
+37.1.203.192,443,CZ,Hurricane Electric IPv6 tunnel broker
+194.87.186.123,443,CZ,Big Data Host
+81.91.214.85,443,CZ,OvaNet a.s
+94.23.170.124,2053,CZ,OVHcloud
+193.124.92.170,443,CZ,Big Data Host
+81.91.214.162,443,CZ,OvaNet a.s
+38.180.48.228,443,CZ,M247 Europe SRL
+194.58.39.80,443,CZ,Baxet Group Inc
+195.133.64.185,443,CZ,Cloud Hosting Solutions
+80.211.194.250,443,CZ,INTERNET CZ a.s
+94.23.171.114,2053,CZ,OVH ISP
+94.23.171.114,8443,CZ,OVH ISP
+195.133.64.12,443,CZ,Cloud Hosting Solutions
+195.133.65.195,2053,CZ,Cloud Hosting Solutions
+194.87.11.56,8000,CZ,Root Localhost

@@ -24,3 +24,29 @@
 46.29.235.31,2053,DK,Global Internet Solutions
 46.29.235.67,2053,DK,Global Internet Solutions
 46.29.235.154,8443,DK,GLOBAL CONNECTIVITY SOLUTIONS LLP
+95.164.85.23,443,DK,Stark Industries Solutions
+95.164.10.34,443,DK,Stark Industries Solutions
+45.136.70.204,443,DK,Webdockio ApS
+45.136.70.251,8443,DK,Webdockio ApS
+46.29.235.43,8443,DK,Global Internet Solutions
+89.28.236.243,443,DK,Webdockio ApS
+46.29.235.43,2053,DK,Global Internet Solutions
+38.180.72.162,2053,DK,M247 Europe
+46.29.235.3,2053,DK,Global Internet Solutions
+46.29.235.195,82,DK,Global Internet Solutions
+46.29.235.171,2053,DK,Global Internet Solutions
+46.29.235.36,2053,DK,Global Internet Solutions
+46.29.235.36,8443,DK,Global Internet Solutions
+45.136.70.251,2053,DK,Webdockio ApS
+46.29.235.31,8443,DK,Global Internet Solutions
+217.78.237.53,2053,DK,Webdockio ApS
+46.29.235.29,8443,DK,Global Internet Solutions
+38.180.20.59,8443,DK,M247 Europe
+38.180.72.160,443,DK,M247 Europe
+46.29.235.67,8443,DK,Global Internet Solutions
+38.180.20.59,2053,DK,M247 Europe
+46.29.235.154,2053,DK,Global Internet Solutions
+38.180.214.40,443,DK,M247 Europe
+46.29.235.31,2053,DK,Global Internet Solutions
+46.29.235.67,2053,DK,Global Internet Solutions
+46.29.235.154,8443,DK,GLOBAL CONNECTIVITY SOLUTIONS LLP
