@@ -1,0 +1,10 @@
+188.253.6.53,25884,TW,Akari Networks (Taipei)
+141.11.86.94,18333,TW,AKILE LTD
+103.137.63.205,31564,TW,Pittqiao Network Information Co.,Ltd.
+60.249.114.181,26398,TW,Chunghwa Telecom Co.,Ltd.
+60.249.114.181,21574,TW,Chunghwa Telecom Co.,Ltd.
+210.61.97.241,81,TW,Chunghwa Telecom Co.,Ltd.
+60.249.114.181,32003,TW,Chunghwa Telecom Co.,Ltd.
+220.130.80.171,20655,TW,Chunghwa Telecom Co.,Ltd.
+103.106.230.186,81,TW,Oneprovider.com - Taipei Infrastructure
+220.135.202.250,81,TW,Chunghwa Telecom Co.,Ltd.
