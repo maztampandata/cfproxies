@@ -24,8 +24,9 @@ interface ProxyTestResult {
 let myGeoIpString: any = null;
 
 // 🔑 Input & Output
-const INPUT_PROXY_FILE = "./src/mazproxy.txt";     // input list
-const OUTPUT_PROXY_FILE = "./src/mazcekproxy.txt"; // hasil aktif
+const INPUT_PROXY_FILE = `${import.meta.dir}/src/mazproxy.txt`;
+const OUTPUT_PROXY_FILE = `${import.meta.dir}/src/mazcekproxy.txt`;
+
 
 const IP_RESOLVER_DOMAIN = "myip.ipeek.workers.dev";
 const IP_RESOLVER_PATH = "/";
