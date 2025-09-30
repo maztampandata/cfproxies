@@ -23,9 +23,10 @@ interface ProxyTestResult {
 
 let myGeoIpString: any = null;
 
-const MZL_PAIR_PROXY_FILE = "./mzlproxy.json";
-const RAW_PROXY_LIST_FILE = "./rawmzlproxy.txt";
-const PROXY_LIST_FILE = "./mzlproxy.txt";
+// 🔑 Input & Output
+const INPUT_PROXY_FILE = "./src/mazproxy.txt";     // input list
+const OUTPUT_PROXY_FILE = "./src/mazcekproxy.txt"; // hasil aktif
+
 const IP_RESOLVER_DOMAIN = "myip.ipeek.workers.dev";
 const IP_RESOLVER_PATH = "/";
 const CONCURRENCY = 99;
@@ -42,7 +43,10 @@ async function sendRequest(host: string, path: string, proxy: any = null) {
 
     const socket = tls.connect(options, () => {
       const request =
-        `GET ${path} HTTP/1.1\r\n` + `Host: ${host}\r\n` + `User-Agent: Mozilla/5.0\r\n` + `Connection: close\r\n\r\n`;
+        `GET ${path} HTTP/1.1\r\n` +
+        `Host: ${host}\r\n` +
+        `User-Agent: Mozilla/5.0\r\n` +
+        `Connection: close\r\n\r\n`;
       socket.write(request);
     });
 
@@ -60,7 +64,6 @@ async function sendRequest(host: string, path: string, proxy: any = null) {
       resolve(body);
     });
     socket.on("error", (error) => {
-      // console.log(error);
       reject(error);
     });
   });
@@ -82,7 +85,6 @@ export async function checkProxy(proxyAddress: string, proxyPort: number): Promi
     ]);
     const finish = new Date().getTime();
 
-    // Save local geoip
     if (myGeoIpString == null) myGeoIpString = myip;
 
     const parsedIpInfo = JSON.parse(ipinfo as string);
@@ -107,36 +109,11 @@ export async function checkProxy(proxyAddress: string, proxyPort: number): Promi
   return result;
 }
 
-// async function checkProxy(proxyAddress: string, proxyPort: number): Promise<ProxyTestResult> {
-//   const controller = new AbortController();
-//   setTimeout(() => controller.abort(), 5000);
-
-//   try {
-//     const res = await Bun.fetch(IP_RESOLVER_DOMAIN + `?ip=${proxyAddress}:${proxyPort}`, {
-//       signal: controller.signal,
-//     });
-
-//     if (res.status == 200) {
-//       return {
-//         error: false,
-//         result: await res.json(),
-//       };
-//     } else {
-//       throw new Error(res.statusText);
-//     }
-//   } catch (e: any) {
-//     return {
-//       error: true,
-//       message: e.message,
-//     };
-//   }
-// }
-
 async function readProxyList(): Promise<ProxyStruct[]> {
   const proxyList: ProxyStruct[] = [];
-
-  const proxyListString = (await Bun.file(RAW_PROXY_LIST_FILE).text()).split("\n");
+  const proxyListString = (await Bun.file(INPUT_PROXY_FILE).text()).split("\n");
   for (const proxy of proxyListString) {
+    if (!proxy.trim()) continue;
     const [address, port, country, org] = proxy.split(",");
     proxyList.push({
       address,
@@ -145,32 +122,22 @@ async function readProxyList(): Promise<ProxyStruct[]> {
       org,
     });
   }
-
   return proxyList;
 }
 
 (async () => {
   const proxyList = await readProxyList();
   const proxyChecked: string[] = [];
-  const uniqueRawProxies: string[] = [];
   const activeProxyList: string[] = [];
-  const kvPair: any = {};
 
   let proxySaved = 0;
 
   for (let i = 0; i < proxyList.length; i++) {
     const proxy = proxyList[i];
     const proxyKey = `${proxy.address}:${proxy.port}`;
-    if (!proxyChecked.includes(proxyKey)) {
-      proxyChecked.push(proxyKey);
-      try {
-        uniqueRawProxies.push(`${proxy.address},${proxy.port},${proxy.country},${proxy.org.replaceAll(/[+]/g, " ")}`);
-      } catch (e: any) {
-        continue;
-      }
-    } else {
-      continue;
-    }
+
+    if (proxyChecked.includes(proxyKey)) continue;
+    proxyChecked.push(proxyKey);
 
     CHECK_QUEUE.push(proxyKey);
     checkProxy(proxy.address, proxy.port)
@@ -180,13 +147,8 @@ async function readProxyList(): Promise<ProxyStruct[]> {
             `${res.result?.proxy},${res.result?.port},${res.result?.country},${res.result?.asOrganization}`
           );
 
-          if (kvPair[res.result.country] == undefined) kvPair[res.result.country] = [];
-          if (kvPair[res.result.country].length < 10) {
-            kvPair[res.result.country].push(`${res.result.proxy}:${res.result.port}`);
-          }
-
           proxySaved += 1;
-          console.log(`[${i}/${proxyList.length}] Proxy disimpan:`, proxySaved);
+          console.log(`[${i}/${proxyList.length}] Proxy aktif disimpan:`, proxySaved);
         }
       })
       .finally(() => {
@@ -198,17 +160,13 @@ async function readProxyList(): Promise<ProxyStruct[]> {
     }
   }
 
-  // Waiting for all process to be completed
   while (CHECK_QUEUE.length) {
     await Bun.sleep(1);
   }
 
-  uniqueRawProxies.sort(sortByCountry);
   activeProxyList.sort(sortByCountry);
 
-  await Bun.write(KV_PAIR_PROXY_FILE, JSON.stringify(kvPair, null, "  "));
-  await Bun.write(RAW_PROXY_LIST_FILE, uniqueRawProxies.join("\n"));
-  await Bun.write(PROXY_LIST_FILE, activeProxyList.join("\n"));
+  await Bun.write(OUTPUT_PROXY_FILE, activeProxyList.join("\n"));
 
   console.log(`Waktu proses: ${(Bun.nanoseconds() / 1000000000).toFixed(2)} detik`);
   process.exit(0);
@@ -217,6 +175,5 @@ async function readProxyList(): Promise<ProxyStruct[]> {
 function sortByCountry(a: string, b: string) {
   a = a.split(",")[2];
   b = b.split(",")[2];
-
   return a.localeCompare(b);
 }
