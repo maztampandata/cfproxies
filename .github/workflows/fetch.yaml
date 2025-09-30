@@ -1,9 +1,12 @@
-name: Fetch and Split Proxy List
+name: 🖥️ FETCH PROXY
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # jalan tiap 6 jam
+    - cron: "0 */6 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write   # <<< WAJIB biar bisa push
 
 jobs:
   split-proxy:
@@ -20,21 +23,17 @@ jobs:
           mkdir -p proxies
           python3 <<'EOF'
           import csv, os
-
           all_lines = []
-
           with open("proxyList.txt") as f:
               reader = csv.reader(f)
               for row in reader:
                   if len(row) < 3:
                       continue
                   all_lines.append(row)
-                  country = row[2].strip()  # ambil kode negara
+                  country = row[2].strip()
                   path = f"proxies/{country}.txt"
                   with open(path, "a") as out:
                       out.write(",".join(row) + "\n")
-
-          # Simpan gabungan ke ALL.txt
           with open("proxies/ALL.txt", "w") as out_all:
               for row in all_lines:
                   out_all.write(",".join(row) + "\n")
