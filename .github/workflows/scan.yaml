@@ -25,7 +25,7 @@ jobs:
           bun-version: latest
 
       - name: Start Scan
-        run: bun run ./helper/proxyip.ts
+        run: bun run ./backed/proxyip.ts
 
       - name: Commit and Push Result
         run: |
