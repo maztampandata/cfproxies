@@ -1,0 +1,16 @@
+40.113.60.248,2053,IE,Microsoft Azure
+52.169.27.133,2053,IE,Microsoft Azure
+38.180.21.33,443,IE,M247 Europe SRL
+34.243.68.254,443,IE,Amazon.com Inc
+40.113.60.248,8443,IE,Microsoft Azure
+34.253.234.62,443,IE,Amazon.com Inc
+52.19.178.111,8443,IE,Amazon.com Inc
+54.229.71.228,443,IE,Amazon.com Inc
+3.249.49.224,443,IE,Amazon.com Inc
+54.74.167.219,443,IE,Amazon.com Inc
+54.229.164.147,2053,IE,Amazon.com Inc
+52.213.11.150,443,IE,Amazon.com Inc
+63.32.194.15,8443,IE,Amazon.com Inc
+52.49.41.80,2053,IE,Amazon.com Inc
+54.246.42.63,2053,IE,Amazon.com Inc
+95.164.44.192,443,IE,STARK INDUSTRIES SOLUTIONS LTD

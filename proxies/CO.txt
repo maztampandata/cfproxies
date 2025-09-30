@@ -1,0 +1,6 @@
+181.48.201.10,18649,CO,Telmex Colombia SA
+181.48.111.13,21783,CO,Telmex Colombia SA
+181.48.111.13,28472,CO,Telmex Colombia S.A
+181.48.111.13,32726,CO,Telmex Colombia S.A
+181.48.201.10,24341,CO,Telmex Colombia S.A
+181.48.201.10,30203,CO,Telmex Colombia S.A

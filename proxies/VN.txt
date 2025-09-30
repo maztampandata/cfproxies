@@ -1,0 +1,5 @@
+103.98.149.96,58904,VN,Maxserver Company Limited
+103.45.232.251,50678,VN,Maxserver Company Limited
+152.32.255.24,587,VN,UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+103.15.90.134,49678,VN,Vietnam Posts And Telecommunications Group
+38.54.30.6,443,VN,Kaopu Cloud HK Limited
