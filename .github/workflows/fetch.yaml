@@ -23,8 +23,8 @@ jobs:
           python3 <<'EOF'
           import csv, os
           all_lines = []
-          # 🔑 baca input dari backend/src/mazproxy.txt
-          with open("backend/src/mazproxy.txt") as f:
+          # 🔑 baca input dari backend/src/mazcheckproxy.txt
+          with open("backend/src/mazcheckproxy.txt") as f:
               reader = csv.reader(f)
               for row in reader:
                   if len(row) < 3:
