@@ -1,10 +1,6 @@
-194.0.194.145,443,LT,Serverio technologijos MB
-194.0.194.237,14181,LT,Serverio technologijos MB
-212.80.216.207,443,LT,Serverio technologijos MB
-195.238.126.52,443,LT,Melbikomas UAB
-194.0.194.222,443,LT,Serverio technologijos MB
-195.238.126.94,443,LT,Melbikomas UAB
-103.113.69.99,443,LT,STARK INDUSTRIES SOLUTIONS LTD
-103.113.69.46,443,LT,STARK INDUSTRIES SOLUTIONS LTD
-94.131.13.164,443,LT,STARK INDUSTRIES SOLUTIONS LTD
-45.154.35.160,443,LT,Serverio technologijos MB
+194.0.194.145,443,LT,Serverio technologijos MB,573 ms
+194.0.194.237,14181,LT,Serverio technologijos MB,628 ms
+195.238.126.52,443,LT,Melbikomas UAB,559 ms
+194.0.194.222,443,LT,Serverio technologijos MB,566 ms
+195.238.126.94,443,LT,Melbikomas UAB,580 ms
+103.113.69.46,443,LT,WorkTitans BV,672 ms
