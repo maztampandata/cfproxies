@@ -2,11 +2,3 @@
 34.22.190.30,443,BE,Google LLC
 95.164.62.196,443,BE,Stark Industries Solutions
 93.185.165.63,443,BE,S.c Infotech-grup
-34.22.142.117,443,BE,Google LLC
-34.22.190.30,443,BE,Google LLC
-95.164.62.196,443,BE,Stark Industries Solutions
-93.185.165.63,443,BE,S.c Infotech-grup
-34.22.142.117,443,BE,Google LLC
-34.22.190.30,443,BE,Google LLC
-95.164.62.196,443,BE,Stark Industries Solutions
-93.185.165.63,443,BE,S.c Infotech-grup

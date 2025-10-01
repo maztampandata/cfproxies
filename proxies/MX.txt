@@ -4,15 +4,3 @@
 140.84.178.238,23010,MX,Oracle Cloud
 201.149.15.14,21585,MX,Megacable Comunicaciones de Mexico
 140.84.179.114,443,MX,Oracle Cloud
-216.238.71.107,443,MX,Choopa LLC
-140.84.167.39,23010,MX,Oracle Corporation
-158.23.81.224,2053,MX,Microsoft Azure
-140.84.178.238,23010,MX,Oracle Cloud
-201.149.15.14,21585,MX,Megacable Comunicaciones de Mexico
-140.84.179.114,443,MX,Oracle Cloud
-216.238.71.107,443,MX,Choopa LLC
-140.84.167.39,23010,MX,Oracle Corporation
-158.23.81.224,2053,MX,Microsoft Azure
-140.84.178.238,23010,MX,Oracle Cloud
-201.149.15.14,21585,MX,Megacable Comunicaciones de Mexico
-140.84.179.114,443,MX,Oracle Cloud
