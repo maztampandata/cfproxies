@@ -6,7 +6,7 @@ interface ProxyStruct {
   country: string;
   org: string;
 }
- update input backend/src/mazproxy.txt output mazcheckproxy.txt
+
 interface ProxyTestResult {
   error: boolean;
   message?: string;
