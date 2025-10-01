@@ -16,7 +16,6 @@ interface ProxyTestResult {
     ip: string;
     port: number;
     delay: number;
-    country: string;
     asOrganization: string;
   };
 }
@@ -52,8 +51,7 @@ async function checkProxy(proxyAddress: string, proxyPort: number): Promise<Prox
           proxyip: true,
           delay: data.delay || 0,
           ip: data.ip || proxyAddress,
-          country: data.country || "Unknown",
-          asOrganization: data.asOrganization || "Unknown",
+          asOrganization: data.asOrganization && data.asOrganization !== "" ? data.asOrganization : "Unknown",
         },
       };
     } else {
@@ -77,7 +75,7 @@ async function readProxyList(): Promise<ProxyStruct[]> {
     proxyList.push({
       address,
       port: parseInt(port),
-      country: country || "Unknown",
+      country: country && country.trim() !== "" ? country : "Unknown",
       org: org || "Unknown",
     });
   }
@@ -113,18 +111,21 @@ async function readProxyList(): Promise<ProxyStruct[]> {
     checkProxy(proxy.address, proxy.port)
       .then((res) => {
         if (!res.error && res.result?.proxyip) {
+          const country = proxy.country; // ✅ negara dari input file
+          const org = res.result?.asOrganization || proxy.org;
+
           activeProxyList.push(
-            `${res.result.proxy},${res.result.port},${res.result.country},${res.result.asOrganization},${res.result.delay}`
+            `${res.result.proxy},${res.result.port},${country},${org},${res.result.delay}`
           );
 
-          if (!kvPair[res.result.country]) kvPair[res.result.country] = [];
-          if (kvPair[res.result.country].length < 10) {
-            kvPair[res.result.country].push(`${res.result.proxy}:${res.result.port}`);
+          if (!kvPair[country]) kvPair[country] = [];
+          if (kvPair[country].length < 10) {
+            kvPair[country].push(`${res.result.proxy}:${res.result.port}`);
           }
 
           proxySaved++;
           console.log(
-            `[${i + 1}/${proxyList.length}] ✅ Alive ${proxyKey} (${res.result.delay} ms)`
+            `[${i + 1}/${proxyList.length}] ✅ Alive ${proxyKey} (${res.result.delay} ms, ${country})`
           );
         } else {
           console.log(
@@ -139,7 +140,7 @@ async function readProxyList(): Promise<ProxyStruct[]> {
         CHECK_QUEUE.pop();
       });
 
-    // 🔽 Delay 200ms antar request supaya API gak overload
+    // 🔽 Delay kecil antar request
     await new Promise((r) => setTimeout(r, 50));
 
     while (CHECK_QUEUE.length >= CONCURRENCY) {
