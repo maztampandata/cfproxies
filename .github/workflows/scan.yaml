@@ -1,12 +1,12 @@
-name: 👌PROXY SCANNER
+name: 👌PROXY SCANNER (NodeJS)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/10 * * * *"   # jalan tiap 10 menit
+    - cron: "*/10 * * * *"   # setiap 10 menit
 
 permissions:
-  contents: write   # biar GITHUB_TOKEN bisa push hasil
+  contents: write
 
 jobs:
   scanner:
@@ -14,6 +14,7 @@ jobs:
     concurrency:
       group: proxy-scan
       cancel-in-progress: false
+    timeout-minutes: 40
 
     steps:
       - name: Checkout repo
@@ -21,27 +22,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.x'
+          node-version: 18
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # kalau butuh pycountry atau lainnya, install di sini
-          pip install pycountry
+      - name: Remove old output
+        run: rm -f backend/src/mazcekproxy.txt || true
 
-      - name: Run proxy scanner (Python)
-        run: |
-          python backend/proxy.py
+      - name: Run proxy scanner
+        run: node backend/proxy.js
 
       - name: Show result preview
         run: |
-          echo "---- hasil mazcekproxy.txt ----"
-          head -n 20 backend/src/mazcekproxy.txt || true
-          echo "---- ukuran file ----"
-          if [ -f backend/src/mazcekproxy.txt ]; then du -h backend/src/mazcekproxy.txt; else echo "file hasil tidak ada"; fi
+          echo "---- head mazcekproxy.txt ----"
+          head -n 30 backend/src/mazcekproxy.txt || true
+          echo "---- size ----"
+          if [ -f backend/src/mazcekproxy.txt ]; then du -h backend/src/mazcekproxy.txt; else echo "no result file"; fi
 
       - name: Commit and Push Result
         env:
