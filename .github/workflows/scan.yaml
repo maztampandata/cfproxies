@@ -3,7 +3,7 @@ name: 👌PROXY SCANNER
 on:
   workflow_dispatch:
   schedule:
-  - cron: "*/10 * * * *"
+    - cron: "*/10 * * * *"   # jalan tiap 10 menit
 
 permissions:
   contents: write   # biar GITHUB_TOKEN bisa push hasil
@@ -18,22 +18,38 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          fetch-depth: 0
 
-      # Jalankan proxy.ts langsung
-      - name: Run proxy checker
-        run: bun ./backend/proxy.ts
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-      # Commit hasil mazcekproxy.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # kalau butuh pycountry atau lainnya, install di sini
+          pip install pycountry
+
+      - name: Run proxy scanner (Python)
+        run: |
+          python backend/proxy.py
+
+      - name: Show result preview
+        run: |
+          echo "---- hasil mazcekproxy.txt ----"
+          head -n 20 backend/src/mazcekproxy.txt || true
+          echo "---- ukuran file ----"
+          if [ -f backend/src/mazcekproxy.txt ]; then du -h backend/src/mazcekproxy.txt; else echo "file hasil tidak ada"; fi
+
       - name: Commit and Push Result
+        env:
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add backend/src/mazcekproxy.txt
+          git add backend/src/mazcekproxy.txt || true
           git commit -m "👌UPDATE PROXY" || echo "No changes to commit"
-          git push origin main --force
-
+          git push origin main || echo "Push failed"
