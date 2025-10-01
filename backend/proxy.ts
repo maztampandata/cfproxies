@@ -140,7 +140,7 @@ async function readProxyList(): Promise<ProxyStruct[]> {
       });
 
     // 🔽 Delay 200ms antar request supaya API gak overload
-    await new Promise((r) => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 50));
 
     while (CHECK_QUEUE.length >= CONCURRENCY) {
       await new Promise((r) => setTimeout(r, 100));
