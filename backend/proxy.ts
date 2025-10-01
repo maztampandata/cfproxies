@@ -1,4 +1,5 @@
 import tls from "tls";
+import fs from "fs";
 
 interface ProxyStruct {
   address: string;
@@ -32,6 +33,9 @@ const CONCURRENCY = 99;
 
 const CHECK_QUEUE: string[] = [];
 
+/**
+ * Kirim request TLS ke target
+ */
 async function sendRequest(host: string, path: string, proxy: any = null) {
   return new Promise((resolve, reject) => {
     const options = {
@@ -42,7 +46,10 @@ async function sendRequest(host: string, path: string, proxy: any = null) {
 
     const socket = tls.connect(options, () => {
       const request =
-        `GET ${path} HTTP/1.1\r\n` + `Host: ${host}\r\n` + `User-Agent: Mozilla/5.0\r\n` + `Connection: close\r\n\r\n`;
+        `GET ${path} HTTP/1.1\r\n` +
+        `Host: ${host}\r\n` +
+        `User-Agent: Mozilla/5.0\r\n` +
+        `Connection: close\r\n\r\n`;
       socket.write(request);
     });
 
@@ -60,12 +67,14 @@ async function sendRequest(host: string, path: string, proxy: any = null) {
       resolve(body);
     });
     socket.on("error", (error) => {
-      // console.log(error);
       reject(error);
     });
   });
 }
 
+/**
+ * Cek apakah proxy aktif
+ */
 export async function checkProxy(proxyAddress: string, proxyPort: number): Promise<ProxyTestResult> {
   let result: ProxyTestResult = {
     message: "Unknown error",
@@ -82,7 +91,6 @@ export async function checkProxy(proxyAddress: string, proxyPort: number): Promi
     ]);
     const finish = new Date().getTime();
 
-    // Save local geoip
     if (myGeoIpString == null) myGeoIpString = myip;
 
     const parsedIpInfo = JSON.parse(ipinfo as string);
@@ -107,42 +115,21 @@ export async function checkProxy(proxyAddress: string, proxyPort: number): Promi
   return result;
 }
 
-// async function checkProxy(proxyAddress: string, proxyPort: number): Promise<ProxyTestResult> {
-//   const controller = new AbortController();
-//   setTimeout(() => controller.abort(), 5000);
-
-//   try {
-//     const res = await Bun.fetch(IP_RESOLVER_DOMAIN + `?ip=${proxyAddress}:${proxyPort}`, {
-//       signal: controller.signal,
-//     });
-
-//     if (res.status == 200) {
-//       return {
-//         error: false,
-//         result: await res.json(),
-//       };
-//     } else {
-//       throw new Error(res.statusText);
-//     }
-//   } catch (e: any) {
-//     return {
-//       error: true,
-//       message: e.message,
-//     };
-//   }
-// }
-
+/**
+ * Baca list proxy dari file txt
+ */
 async function readProxyList(): Promise<ProxyStruct[]> {
   const proxyList: ProxyStruct[] = [];
+  const proxyListString = fs.readFileSync(RAW_PROXY_LIST_FILE, "utf-8").split("\n");
 
-  const proxyListString = (await Bun.file(RAW_PROXY_LIST_FILE).text()).split("\n");
   for (const proxy of proxyListString) {
+    if (!proxy.trim()) continue;
     const [address, port, country, org] = proxy.split(",");
     proxyList.push({
       address,
       port: parseInt(port),
-      country,
-      org,
+      country: country || "Unknown",
+      org: org || "Unknown",
     });
   }
 
@@ -151,6 +138,8 @@ async function readProxyList(): Promise<ProxyStruct[]> {
 
 (async () => {
   const proxyList = await readProxyList();
+  console.log(`🔍 Total proxy yang akan dicek: ${proxyList.length}`);
+
   const proxyChecked: string[] = [];
   const uniqueRawProxies: string[] = [];
   const activeProxyList: string[] = [];
@@ -161,11 +150,14 @@ async function readProxyList(): Promise<ProxyStruct[]> {
   for (let i = 0; i < proxyList.length; i++) {
     const proxy = proxyList[i];
     const proxyKey = `${proxy.address}:${proxy.port}`;
+
     if (!proxyChecked.includes(proxyKey)) {
       proxyChecked.push(proxyKey);
       try {
-        uniqueRawProxies.push(`${proxy.address},${proxy.port},${proxy.country},${proxy.org.replaceAll(/[+]/g, " ")}`);
-      } catch (e: any) {
+        uniqueRawProxies.push(
+          `${proxy.address},${proxy.port},${proxy.country},${proxy.org.replaceAll(/[+]/g, " ")}`
+        );
+      } catch {
         continue;
       }
     } else {
@@ -186,7 +178,13 @@ async function readProxyList(): Promise<ProxyStruct[]> {
           }
 
           proxySaved += 1;
-          console.log(`[${i}/${proxyList.length}] Proxy disimpan:`, proxySaved);
+          console.log(`[${i + 1}/${proxyList.length}] ✅ Alive: ${proxyKey} (${res.result.delay}ms)`);
+          process.stdout.write(""); // flush biar muncul di Actions
+        } else {
+          console.log(
+            `[${i + 1}/${proxyList.length}] ❌ Dead: ${proxyKey} (${res.message || "unknown"})`
+          );
+          process.stdout.write("");
         }
       })
       .finally(() => {
@@ -194,29 +192,27 @@ async function readProxyList(): Promise<ProxyStruct[]> {
       });
 
     while (CHECK_QUEUE.length >= CONCURRENCY) {
-      await Bun.sleep(1);
+      await new Promise((r) => setTimeout(r, 100));
     }
   }
 
-  // Waiting for all process to be completed
   while (CHECK_QUEUE.length) {
-    await Bun.sleep(1);
+    await new Promise((r) => setTimeout(r, 100));
   }
 
   uniqueRawProxies.sort(sortByCountry);
   activeProxyList.sort(sortByCountry);
 
-  await Bun.write(KV_PAIR_PROXY_FILE, JSON.stringify(kvPair, null, "  "));
-  await Bun.write(RAW_PROXY_LIST_FILE, uniqueRawProxies.join("\n"));
-  await Bun.write(PROXY_LIST_FILE, activeProxyList.join("\n"));
+  fs.writeFileSync(KV_PAIR_PROXY_FILE, JSON.stringify(kvPair, null, 2));
+  fs.writeFileSync(RAW_PROXY_LIST_FILE, uniqueRawProxies.join("\n"));
+  fs.writeFileSync(PROXY_LIST_FILE, activeProxyList.join("\n"));
 
-  console.log(`Waktu proses: ${(Bun.nanoseconds() / 1000000000).toFixed(2)} detik`);
+  console.log(`\n🎉 Selesai! Proxy aktif: ${proxySaved}/${proxyList.length}`);
   process.exit(0);
 })();
 
 function sortByCountry(a: string, b: string) {
-  a = a.split(",")[2];
-  b = b.split(",")[2];
-
-  return a.localeCompare(b);
+  const ca = a.split(",")[2];
+  const cb = b.split(",")[2];
+  return ca.localeCompare(cb);
 }
