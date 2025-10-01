@@ -41,16 +41,17 @@ async function checkProxy(proxyAddress: string, proxyPort: number): Promise<Prox
     });
 
     const data = await res.json();
+    const msg = (data.message || "").toLowerCase();
 
-    if (data && data.delay && data.delay > 0 && data.proxyip) {
+    if (msg.includes("alive")) {
       return {
         error: false,
         result: {
           proxy: proxyAddress,
           port: proxyPort,
           proxyip: true,
-          delay: data.delay,
-          ip: data.ip,
+          delay: data.delay || 0,
+          ip: data.ip || proxyAddress,
           country: data.country || "Unknown",
           asOrganization: data.asOrganization || "Unknown",
         },
@@ -122,9 +123,13 @@ async function readProxyList(): Promise<ProxyStruct[]> {
           }
 
           proxySaved++;
-          console.log(`[${i + 1}/${proxyList.length}] ✅ Alive ${proxyKey} (${res.result.delay} ms)`);
+          console.log(
+            `[${i + 1}/${proxyList.length}] ✅ Alive ${proxyKey} (${res.result.delay} ms)`
+          );
         } else {
-          console.log(`[${i + 1}/${proxyList.length}] ❌ Dead ${proxyKey} (${res.message || "unknown"})`);
+          console.log(
+            `[${i + 1}/${proxyList.length}] ❌ Dead ${proxyKey} (${res.message || "unknown"})`
+          );
         }
       })
       .catch((err) => {
