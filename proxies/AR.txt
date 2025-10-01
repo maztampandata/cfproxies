@@ -4,3 +4,6 @@
 190.183.61.62,2053,AR,Gigared SA
 31.40.212.216,8443,AR,BrainStorm Network
 190.183.61.62,8443,AR,Gigared S.A
+190.183.61.62,2053,AR,Gigared SA
+31.40.212.216,8443,AR,BrainStorm Network
+190.183.61.62,8443,AR,Gigared S.A
