@@ -3,7 +3,7 @@ name: 👌PROXY SCANNER
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */6 * * *"   # jalan tiap 6 jam
+  - cron: "*/10 * * * *"
 
 permissions:
   contents: write   # biar GITHUB_TOKEN bisa push hasil
