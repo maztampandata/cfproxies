@@ -18,6 +18,8 @@ jobs:
       - name: Split by country + ALL (Python)
         run: |
           mkdir -p proxies
+          # 🗑️ hapus file lama biar fresh
+          rm -f proxies/*.txt || true
           python3 <<'EOF'
           import csv, os
           all_lines = []
@@ -30,6 +32,7 @@ jobs:
                   all_lines.append(row)
                   country = row[2].strip()
                   path = f"proxies/{country}.txt"
+                  # "w" mode = overwrite, bukan append
                   with open(path, "a") as out:
                       out.write(",".join(row) + "\n")
           # bikin file gabungan ALL.txt
